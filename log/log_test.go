@@ -14,3 +14,8 @@ func TestLogger(t *testing.T) {
 	<-time.After(1 * time.Second)
 	logger.Close()
 }
+
+func TestTermLogger(t *testing.T) {
+	InitLogger(Debug)
+	Fatalf("good boy")
+}
