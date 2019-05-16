@@ -17,5 +17,6 @@ func TestLogger(t *testing.T) {
 
 func TestTermLogger(t *testing.T) {
 	InitLogger(Debug)
+	defer CloseLogger()
 	Fatalf("good boy")
 }
