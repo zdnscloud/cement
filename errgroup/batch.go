@@ -9,7 +9,7 @@ var (
 	ErrInvalidParameter = errors.New("parameter isn't a slice")
 )
 
-func GetObjectQueue(slice interface{}) (int, chan interface{}, error) {
+func createQueueFromSlice(slice interface{}) (int, chan interface{}, error) {
 	sliceVal := reflect.ValueOf(slice)
 	if sliceVal.Kind() != reflect.Slice {
 		return 0, nil, ErrInvalidParameter
@@ -29,7 +29,7 @@ func GetObjectQueue(slice interface{}) (int, chan interface{}, error) {
 }
 
 func Batch(tasks interface{}, worker func(interface{}) (interface{}, error)) (<-chan interface{}, error) {
-	workerCount, taskCh, err := GetObjectQueue(tasks)
+	workerCount, taskCh, err := createQueueFromSlice(tasks)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func Batch(tasks interface{}, worker func(interface{}) (interface{}, error)) (<-
 }
 
 func BatchBackgroud(tasks interface{}, worker func(interface{}) error) error {
-	workerCount, taskCh, err := GetObjectQueue(tasks)
+	workerCount, taskCh, err := createQueueFromSlice(tasks)
 	if err != nil {
 		return err
 	}

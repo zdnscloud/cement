@@ -53,3 +53,8 @@ func TestBatchWithError(t *testing.T) {
 	sort.Sort(sort.StringSlice(results))
 	ut.Equal(t, []string{"s2good", "s3good"}, results)
 }
+
+func TestBatchWithNoneSlice(t *testing.T) {
+	_, err := Batch(10, dumpAppendError)
+	ut.Equal(t, err, ErrInvalidParameter)
+}
