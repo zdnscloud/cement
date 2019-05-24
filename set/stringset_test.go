@@ -7,7 +7,11 @@ import (
 )
 
 func TestStringSetAddDelete(t *testing.T) {
-	ss := StringSetFromSlice([]string{"a", "b", "ab", "c"})
+	ss := StringSetFromSlice([]string{"c", "b", "ab", "a"})
+	for i := 0; i < 10; i++ {
+		ut.Equal(t, ss.ToSortedSlice(), []string{"a", "ab", "b", "c"})
+	}
+
 	ut.Assert(t, ss.Member("a"), "")
 	ss.Remove("a")
 	ut.Assert(t, ss.Member("a") == false, "")
