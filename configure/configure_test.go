@@ -1,7 +1,7 @@
 package configure
 
 import (
-	ut "cement/unittest"
+	ut "github.com/zdnscloud/cement/unittest"
 	"os"
 	"reflect"
 	"testing"
