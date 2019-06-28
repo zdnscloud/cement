@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	ut "cement/unittest"
+	ut "github.com/zdnscloud/cement/unittest"
 )
 
 var sqlite3DBConnInfo = map[string]interface{}{
