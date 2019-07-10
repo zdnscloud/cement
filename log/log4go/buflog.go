@@ -3,29 +3,36 @@ package log4go
 type BufLogWriter struct {
 	format       string
 	rec          chan *LogRecord
+	logCh        chan string
 	bufCloseSync chan struct{}
 }
 
-func NewBufLogWriter(fmt string, bufCh chan string) *BufLogWriter {
+func NewBufLogWriter(logChLength uint, fmt string) *BufLogWriter {
 	w := &BufLogWriter{
 		format:       fmt,
 		rec:          make(chan *LogRecord, LogBufferLength),
+		logCh:        make(chan string, logChLength),
 		bufCloseSync: make(chan struct{}),
 	}
-	go w.run(bufCh)
+	go w.run()
 	return w
 }
 
-func (w *BufLogWriter) run(out chan string) {
+func (w *BufLogWriter) run() {
 	for {
 		rec, ok := <-w.rec
 		if !ok {
 			close(w.bufCloseSync)
 			return
 		}
+		log := FormatLogRecord(w.format, rec)
 
-		out <- FormatLogRecord(w.format, rec)
-
+		select {
+		case w.logCh <- log:
+		default:
+			<-w.logCh
+			w.logCh <- log
+		}
 	}
 }
 
@@ -38,8 +45,10 @@ func (w *BufLogWriter) Close() {
 	<-w.bufCloseSync
 }
 
-func NewBufLogger(buf chan string, lvl level, fmt string) Logger {
+func NewBufLogger(logChLength uint, lvl level, fmt string) (Logger, chan string) {
+	bufLogWriter := NewBufLogWriter(logChLength, fmt)
+
 	return Logger{
-		"buf": &Filter{lvl, NewBufLogWriter(fmt, buf)},
-	}
+		"buf": &Filter{lvl, bufLogWriter},
+	}, bufLogWriter.logCh
 }

@@ -76,24 +76,24 @@ func NewLog4jConsoleLoggerWithFmt(level LogLevel, fmt string) Logger {
 	}
 }
 
-func NewLog4jBufLogger(buf chan string, level LogLevel) Logger {
-	return NewLog4jBufLoggerWithFmt(buf, level, "")
+func NewLog4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
+	return NewLog4jBufLoggerWithFmt(logChLength, level, "")
 }
 
-func NewLog4jBufLoggerWithFmt(buf chan string, level LogLevel, fmt string) Logger {
+func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, fmt string) (Logger, chan string) {
 	if fmt == "" {
 		fmt = l4g.FORMAT_SHORT
 	}
 
 	switch level {
 	case Debug:
-		return l4g.NewBufLogger(buf, l4g.DEBUG, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.DEBUG, fmt)
 	case Info:
-		return l4g.NewBufLogger(buf, l4g.INFO, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.INFO, fmt)
 	case Warn:
-		return l4g.NewBufLogger(buf, l4g.WARNING, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.WARNING, fmt)
 	case Error:
-		return l4g.NewBufLogger(buf, l4g.ERROR, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.ERROR, fmt)
 	default:
 		panic("unkown level" + string(level))
 	}
