@@ -22,6 +22,7 @@ func (w *BufLogWriter) run() {
 	for {
 		rec, ok := <-w.rec
 		if !ok {
+			close(w.logCh)
 			close(w.bufCloseSync)
 			return
 		}
@@ -42,7 +43,6 @@ func (w *BufLogWriter) LogWrite(rec *LogRecord) {
 
 func (w *BufLogWriter) Close() {
 	close(w.rec)
-	close(w.logCh)
 	<-w.bufCloseSync
 }
 
