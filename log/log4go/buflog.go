@@ -42,6 +42,7 @@ func (w *BufLogWriter) LogWrite(rec *LogRecord) {
 
 func (w *BufLogWriter) Close() {
 	close(w.rec)
+	close(w.logCh)
 	<-w.bufCloseSync
 }
 
