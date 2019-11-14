@@ -22,15 +22,11 @@ const (
 )
 
 func NewLog4jLogger(filename string, level LogLevel, maxSize, maxFileCount int) (Logger, error) {
-	return NewLog4jLoggerWithFmt(filename, level, maxSize, maxFileCount, "")
+	return NewLog4jLoggerWithFmt(filename, level, maxSize, maxFileCount, l4g.NewDefaultFormater(l4g.FORMAT_SHORT))
 }
 
-func NewLog4jLoggerWithFmt(filename string, level LogLevel, maxSize, maxFileCount int, fmt string) (Logger, error) {
+func NewLog4jLoggerWithFmt(filename string, level LogLevel, maxSize, maxFileCount int, fmt l4g.LogFormater) (Logger, error) {
 	logger := make(l4g.Logger)
-
-	if fmt == "" {
-		fmt = l4g.FORMAT_SHORT
-	}
 
 	flw, err := l4g.NewFileLogWriter(filename, fmt, maxSize, maxFileCount)
 	if err != nil {
@@ -77,23 +73,24 @@ func NewLog4jConsoleLoggerWithFmt(level LogLevel, fmt string) Logger {
 }
 
 func NewLog4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
-	return NewLog4jBufLoggerWithFmt(logChLength, level, "")
+	return NewLog4jBufLoggerWithFmt(logChLength, level, l4g.NewDefaultFormater(l4g.FORMAT_SHORT))
 }
 
-func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, fmt string) (Logger, chan string) {
-	if fmt == "" {
-		fmt = l4g.FORMAT_SHORT
-	}
+func NewISO3339Log4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
+	formter := &l4g.ISO3339Formator{}
+	return NewLog4jBufLoggerWithFmt(logChLength, level, formter)
+}
 
+func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, formater l4g.LogFormater) (Logger, chan string) {
 	switch level {
 	case Debug:
-		return l4g.NewBufLogger(logChLength, l4g.DEBUG, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.DEBUG, formater)
 	case Info:
-		return l4g.NewBufLogger(logChLength, l4g.INFO, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.INFO, formater)
 	case Warn:
-		return l4g.NewBufLogger(logChLength, l4g.WARNING, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.WARNING, formater)
 	case Error:
-		return l4g.NewBufLogger(logChLength, l4g.ERROR, fmt)
+		return l4g.NewBufLogger(logChLength, l4g.ERROR, formater)
 	default:
 		panic("unkown level" + string(level))
 	}
