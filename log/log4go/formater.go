@@ -109,6 +109,10 @@ var _ LogFormater = &DefaultFormater{}
 
 type ISO3339Formator struct{}
 
+func NewISO3339Formator() *ISO3339Formator {
+	return &ISO3339Formator{}
+}
+
 func (f *ISO3339Formator) Format(rec *LogRecord) string {
 	if rec == nil {
 		return "<nil>"

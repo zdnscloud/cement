@@ -25,10 +25,10 @@ func NewLog4jLogger(filename string, level LogLevel, maxSize, maxFileCount int) 
 	return NewLog4jLoggerWithFmt(filename, level, maxSize, maxFileCount, l4g.NewDefaultFormater(l4g.FORMAT_SHORT))
 }
 
-func NewLog4jLoggerWithFmt(filename string, level LogLevel, maxSize, maxFileCount int, fmt l4g.LogFormater) (Logger, error) {
+func NewLog4jLoggerWithFmt(filename string, level LogLevel, maxSize, maxFileCount int, formater l4g.LogFormater) (Logger, error) {
 	logger := make(l4g.Logger)
 
-	flw, err := l4g.NewFileLogWriter(filename, fmt, maxSize, maxFileCount)
+	flw, err := l4g.NewFileLogWriter(filename, formater, maxSize, maxFileCount)
 	if err != nil {
 		return nil, err
 	}
@@ -50,23 +50,19 @@ func NewLog4jLoggerWithFmt(filename string, level LogLevel, maxSize, maxFileCoun
 }
 
 func NewLog4jConsoleLogger(level LogLevel) Logger {
-	return NewLog4jConsoleLoggerWithFmt(level, "")
+	return NewLog4jConsoleLoggerWithFmt(level, l4g.NewDefaultFormater(l4g.FORMAT_SHORT))
 }
 
-func NewLog4jConsoleLoggerWithFmt(level LogLevel, fmt string) Logger {
-	if fmt == "" {
-		fmt = l4g.FORMAT_SHORT
-	}
-
+func NewLog4jConsoleLoggerWithFmt(level LogLevel, formater l4g.LogFormater) Logger {
 	switch level {
 	case Debug:
-		return l4g.NewDefaultLogger(l4g.DEBUG, fmt)
+		return l4g.NewDefaultLogger(l4g.DEBUG, formater)
 	case Info:
-		return l4g.NewDefaultLogger(l4g.INFO, fmt)
+		return l4g.NewDefaultLogger(l4g.INFO, formater)
 	case Warn:
-		return l4g.NewDefaultLogger(l4g.WARNING, fmt)
+		return l4g.NewDefaultLogger(l4g.WARNING, formater)
 	case Error:
-		return l4g.NewDefaultLogger(l4g.ERROR, fmt)
+		return l4g.NewDefaultLogger(l4g.ERROR, formater)
 	default:
 		panic("unkown level" + string(level))
 	}
@@ -77,8 +73,7 @@ func NewLog4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
 }
 
 func NewISO3339Log4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
-	formter := &l4g.ISO3339Formator{}
-	return NewLog4jBufLoggerWithFmt(logChLength, level, formter)
+	return NewLog4jBufLoggerWithFmt(logChLength, level, l4g.NewISO3339Formator())
 }
 
 func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, formater l4g.LogFormater) (Logger, chan string) {
