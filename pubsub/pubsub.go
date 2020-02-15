@@ -177,10 +177,6 @@ func (reg *registry) removeChannel(ch chan interface{}) {
 }
 
 func (reg *registry) remove(topic string, ch chan interface{}) {
-	if _, ok := reg.topics[topic]; !ok {
-		return
-	}
-
 	chs, ok := reg.topics[topic]
 	if !ok {
 		return
