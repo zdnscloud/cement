@@ -46,7 +46,7 @@ func (w *BufLogWriter) Close() {
 	<-w.bufCloseSync
 }
 
-func NewBufLogger(logChLength uint, lvl level, fmt LogFormater) (Logger, chan string) {
+func NewBufLogger(logChLength uint, lvl level, fmt LogFormater) (Logger, <-chan string) {
 	bufLogWriter := NewBufLogWriter(logChLength, fmt)
 
 	return Logger{

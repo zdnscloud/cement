@@ -68,15 +68,15 @@ func NewLog4jConsoleLoggerWithFmt(level LogLevel, formater l4g.LogFormater) Logg
 	}
 }
 
-func NewLog4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
+func NewLog4jBufLogger(logChLength uint, level LogLevel) (Logger, <-chan string) {
 	return NewLog4jBufLoggerWithFmt(logChLength, level, l4g.NewDefaultFormater(l4g.FORMAT_SHORT))
 }
 
-func NewISO3339Log4jBufLogger(logChLength uint, level LogLevel) (Logger, chan string) {
+func NewISO3339Log4jBufLogger(logChLength uint, level LogLevel) (Logger, <-chan string) {
 	return NewLog4jBufLoggerWithFmt(logChLength, level, l4g.NewISO3339Formator())
 }
 
-func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, formater l4g.LogFormater) (Logger, chan string) {
+func NewLog4jBufLoggerWithFmt(logChLength uint, level LogLevel, formater l4g.LogFormater) (Logger, <-chan string) {
 	switch level {
 	case Debug:
 		return l4g.NewBufLogger(logChLength, l4g.DEBUG, formater)
