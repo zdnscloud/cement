@@ -1,8 +1,11 @@
 package slice
 
 import (
-	ut "github.com/zdnscloud/cement/unittest"
+	"math/rand"
 	"testing"
+	"time"
+
+	ut "github.com/zdnscloud/cement/unittest"
 )
 
 func TestSliceDifference(t *testing.T) {
@@ -52,22 +55,17 @@ func TestSliceIndexAndRemove(t *testing.T) {
 		t.Errorf("s1 has no  e but index find it")
 	}
 
-	s1 = SliceRemoveAt(s1, 3)
+	SliceRemoveAt(&s1, 3)
 	if len(s1) != 3 || s1[2] != "c" {
 		t.Errorf("remove last one in slice failed")
 	}
 
-	s1 = SliceRemoveAt(s1, 0)
+	SliceRemoveAt(&s1, 0)
 	if len(s1) != 2 || s1[0] != "b" {
 		t.Errorf("remove first one in slice failed")
 	}
 
-	s1 = SliceRemoveAt(s1, 2)
-	if len(s1) != 2 {
-		t.Errorf("remove index out of range should return itself")
-	}
-
-	s1 = SliceRemove(s1, "b")
+	SliceRemove(&s1, "b")
 	if len(s1) != 1 {
 		t.Errorf("remove last b should succeed")
 	}
@@ -85,6 +83,7 @@ func TestRandElem(t *testing.T) {
 }
 
 func TestShuffleSlice(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
 	s1 := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"}
 	for i := 0; i < 100; i++ {
 		clone := make([]string, len(s1))
