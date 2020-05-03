@@ -56,6 +56,7 @@ func UnwrapSingleElemSlice(rs interface{}) (interface{}, error) {
 	return p.Interface(), nil
 }
 
+//ss is a slice of struct
 func GetStructInSlice(ss interface{}) (interface{}, error) {
 	slice := reflect.Indirect(reflect.ValueOf(ss))
 	if slice.Kind() != reflect.Slice {
@@ -67,4 +68,19 @@ func GetStructInSlice(ss interface{}) (interface{}, error) {
 		return "", errors.New("out should be a slice of structs")
 	}
 	return reflect.New(model).Interface(), nil
+}
+
+//ss is a slice of struct pointer
+func GetStructPointerInSlice(ss interface{}) (interface{}, error) {
+	slice := reflect.Indirect(reflect.ValueOf(ss))
+	if slice.Kind() != reflect.Slice {
+		return "", errors.New("out should be a model slice pointer")
+	}
+
+	model := slice.Type().Elem()
+	if model.Kind() != reflect.Ptr || model.Elem().Kind() != reflect.Struct {
+		return "", errors.New("out should be a slice of pointer")
+	}
+
+	return reflect.New(model.Elem()).Interface(), nil
 }
