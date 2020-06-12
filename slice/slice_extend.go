@@ -2,12 +2,7 @@ package slice
 
 import (
 	"math/rand"
-	"time"
 )
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
 
 func SliceDifference(s1, s2 []string) []string {
 	exists := make(map[string]bool)
@@ -60,21 +55,24 @@ func SliceIndex(slice []string, s string) int {
 	return -1
 }
 
-func SliceRemoveAt(slice []string, i int) []string {
-	if i >= len(slice) {
-		return slice
+func SliceRemoveAt(slice *[]string, i int) {
+	if i >= len(*slice) {
+		panic("remove index exceed range")
 	}
 
-	return append(slice[:i], slice[i+1:]...)
+	copy((*slice)[i:], (*slice)[i+1:])
+	(*slice)[len(*slice)-1] = ""
+	*slice = (*slice)[:len(*slice)-1]
 }
 
-func SliceRemove(slice []string, s string) []string {
-	for i, v := range slice {
+func SliceRemove(slice *[]string, s string) bool {
+	for i, v := range *slice {
 		if v == s {
-			return append(slice[:i], slice[i+1:]...)
+			SliceRemoveAt(slice, i)
+			return true
 		}
 	}
-	return slice
+	return false
 }
 
 func RandElem(slice []string) string {
